@@ -6,11 +6,18 @@ from django.conf import settings
 class ComplaintStatus(models.Model):
     name = models.CharField(max_length=128)
 
+    def __str__(self):
+        return self.name
+
 class ComplaintCategory(models.Model):
     name = models.CharField(max_length=128)
+    def __str__(self):
+        return self.name
 
 class Notes(models.Model):
     description = models.CharField(max_length=1024)
+    def __str__(self):
+        return self.description
 
 class Complaint(models.Model):
     

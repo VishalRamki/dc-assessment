@@ -1,0 +1,37 @@
+[
+    {
+        "model": "dashboard.complaintcategory",
+        "pk": 1,
+        "fields": {
+            "name": "Billing"
+        }
+    },
+    {
+        "model": "dashboard.complaintcategory",
+        "pk": 2,
+        "fields": {
+            "name": "Network"
+        }
+    },
+    {
+        "model": "dashboard.complaintcategory",
+        "pk": 3,
+        "fields": {
+            "name": "Device"
+        }
+    },
+    {
+        "model": "dashboard.complaintcategory",
+        "pk": 4,
+        "fields": {
+            "name": "Roaming"
+        }
+    },
+    {
+        "model": "dashboard.complaintcategory",
+        "pk": 5,
+        "fields": {
+            "name": "Other"
+        }
+    }
+]

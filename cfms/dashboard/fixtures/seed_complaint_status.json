@@ -1,0 +1,37 @@
+[
+    {
+        "model": "dashboard.complaintstatus",
+        "pk": 1,
+        "fields": {
+            "name": "Open"
+        }
+    },
+    {
+        "model": "dashboard.complaintstatus",
+        "pk": 2,
+        "fields": {
+            "name": "In Progress"
+        }
+    },
+    {
+        "model": "dashboard.complaintstatus",
+        "pk": 3,
+        "fields": {
+            "name": "Escalated"
+        }
+    },
+    {
+        "model": "dashboard.complaintstatus",
+        "pk": 4,
+        "fields": {
+            "name": "Resolved"
+        }
+    },
+    {
+        "model": "dashboard.complaintstatus",
+        "pk": 5,
+        "fields": {
+            "name": "Closed"
+        }
+    }
+]
