@@ -1,0 +1,32 @@
+[
+    {
+        "model": "dashboard.serviceplan",
+        "pk": 1,
+        "fields": {
+            "name": "Basic",
+            "data": 1000.0,
+            "call": 500.0,
+            "sms": 1000
+        }
+    },
+    {
+        "model": "dashboard.serviceplan",
+        "pk": 2,
+        "fields": {
+            "name": "Standard",
+            "data": 10000.0,
+            "call": 1000.0,
+            "sms": 2500
+        }
+    },
+    {
+        "model": "dashboard.serviceplan",
+        "pk": 3,
+        "fields": {
+            "name": "Premium",
+            "data": 25000.0,
+            "call": 5000.0,
+            "sms": 10000
+        }
+    }
+]
