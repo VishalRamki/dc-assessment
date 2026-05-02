@@ -30,19 +30,19 @@ class Complaint(models.Model):
     customer_account_ref = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='assigned_complaints'
+        related_name='customer_complaints'
     )
 
     assigned_agent_ref = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='customer_complaints'
+        related_name='assigned_complaints'
     )
 
     complaint_category_ref = models.ForeignKey(ComplaintCategory, on_delete=models.CASCADE)
     complaint_status_ref = models.ForeignKey(ComplaintStatus, on_delete=models.CASCADE)
 
-    notes = models.ManyToManyField(Notes)
+    notes = models.ManyToManyField(Notes, blank=True)
 
 class ServicePlan(models.Model):
     name = models.CharField(max_length=128)

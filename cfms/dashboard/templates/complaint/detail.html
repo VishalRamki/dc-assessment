@@ -1,0 +1,20 @@
+<h1>Complaint #{{ complaint.id }}</h1>
+
+<p><strong>Description:</strong> {{ complaint.description }}</p>
+<p><strong>Status:</strong> {{ complaint.complaint_status_ref }}</p>
+<p><strong>Category:</strong> {{ complaint.complaint_category_ref }}</p>
+
+<p><strong>Submitted:</strong> {{ complaint.sub_date }}</p>
+<p><strong>Last Updated:</strong> {{ complaint.last_update_date }}</p>
+
+<p><strong>Customer:</strong> {{ complaint.customer_account_ref }}</p>
+<p><strong>Assigned Agent:</strong> {{ complaint.assigned_agent_ref }}</p>
+
+<h3>Notes</h3>
+<ul>
+  {% for note in complaint.notes.all %}
+    <li>{{ note }}</li>
+  {% empty %}
+    <li>No notes available</li>
+  {% endfor %}
+</ul>

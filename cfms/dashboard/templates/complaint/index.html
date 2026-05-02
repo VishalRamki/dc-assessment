@@ -1,0 +1,9 @@
+{% if latest_complaints_list %}
+    <ul>
+    {% for complaint in latest_complaints_list %}
+        <li><a href="/dashboard/complaint/{{ complaint.id }}/">{{ complaint.description }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>You have not provided any complaints yet.</p>
+{% endif %}
