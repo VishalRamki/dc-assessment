@@ -23,9 +23,12 @@ services:
    ports:
      - "8000:8000"
    depends_on:
-     - db
-     - django-migrate-db
-     - django-seed-db
+     db:
+      condition: service_healthy
+     django-migrate-db:
+      condition: service_completed_successfully
+     django-seed-db:
+       condition: service_completed_successfully
    environment:
      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
      DEBUG: ${DEBUG}
@@ -54,7 +57,10 @@ services:
     
  django-seed-db:
   build: .
-  command: python manage.py loaddata fixtures/*.json
+  command: >
+    sh -c "
+    python manage.py loaddata */fixtures/*.json
+    "
   environment:
     DATABASE_URL: postgres://postgres:secret@postgres:5432/myapp
   depends_on:
