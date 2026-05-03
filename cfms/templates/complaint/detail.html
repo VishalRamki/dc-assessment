@@ -79,20 +79,32 @@
         </div>
 
         <div class="card-body d-flex flex-wrap gap-2">
-            {% for status in statuses %}
-                <form method="post"
-                      action="{% url 'dashboard:update-status' complaint.id status.id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-primary btn-sm">
-                        {{ status.name }}
-                    </button>
-                </form>
-            {% endfor %}
+            {% if can_assign_agent %}
+                {% for status in statuses %}
+                    <form method="post" action="{% url 'dashboard:update-status' complaint.id status.id %}">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-primary btn-sm">
+                            {{ status.name }}
+                        </button>
+                    </form>
+                {% endfor %}
+            {% else %}
+                {% for status in statuses %}
+                    {% if status.name in allowed_next_statuses %}
+                        <form method="post" action="{% url 'dashboard:update-status' complaint.id status.id %}">
+                            {% csrf_token %}
+                            <button class="btn btn-outline-primary btn-sm">
+                                {{ status.name }}
+                            </button>
+                        </form>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
     {% endif %}
 
-    {% if note_form %}
+    {% if can_update_status %}
     <div class="card mb-4">
         <div class="card-header bg-light">
             <strong>Notes</strong>

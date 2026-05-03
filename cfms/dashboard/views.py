@@ -14,6 +14,14 @@ from .models import Complaint, ComplaintStatus
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect
 
+allowed_transitions = {
+    "Open": ["In Progress"],
+    "In Progress": ["Escalated", "Resolved"],
+    "Escalated": ["In Progress", "Resolved"],
+    "Resolved": ["Closed"],
+    "Closed": [],
+}
+
 class IndexView(LoginRequiredMixin, generic.ListView):
     template_name = "complaint/index.html"
     context_object_name = "latest_complaints_list"
@@ -44,11 +52,11 @@ class DetailView(LoginRequiredMixin, generic.DetailView):
                 user.is_staff or user.groups.filter(name="Agent").exists() or user.groups.filter(name="Admin").exists()
             )
         # only allow certain group (e.g. "Agent")
-        if user.groups.filter(name="Agent").exists() or user.groups.filter(name="Admin"):
+        if user.groups.filter(name="Agent").exists() or user.groups.filter(name="Admin").exists():
             context["note_form"] = NoteForm()
 
         context["can_assign_agent"] = user.groups.filter(name="Admin").exists() or user.is_superuser
-
+        context["allowed_next_statuses"] = allowed_transitions.get(self.object.complaint_status_ref.name, [])
         context["agents"] = User.objects.filter(groups__name="Agent")
 
         return context
@@ -124,6 +132,7 @@ class UpdateComplaintStatusView(LoginRequiredMixin, generic.DetailView):
 
     def post(self, request, pk, status_id):
         complaint = get_object_or_404(Complaint, pk=pk)
+        new_status = get_object_or_404(ComplaintStatus, pk=status_id) 
 
         # HARD SECURITY CHECK
         if not (request.user.is_staff or request.user.groups.filter(name="Agent").exists()  or request.user.groups.filter(name="Admin").exists()):
@@ -137,7 +146,13 @@ class UpdateComplaintStatusView(LoginRequiredMixin, generic.DetailView):
             if complaint.assigned_agent_ref != request.user:
                 raise PermissionDenied
 
-        complaint.complaint_status_ref_id = status_id
+        current = complaint.complaint_status_ref.name
+        if new_status.name not in allowed_transitions.get(current, []):
+            raise PermissionDenied("Invalid status transition")
+
+        complaint.complaint_status_ref = new_status
+
+        #complaint.complaint_status_ref_id = status_id
         complaint.save()
 
         return redirect("dashboard:detail", pk=pk)
