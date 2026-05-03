@@ -57,10 +57,7 @@ services:
     
  django-seed-db:
   build: .
-  command: >
-    sh -c "
-    python manage.py loaddata */fixtures/*.json
-    "
+  command: python manage.py seed_db
   environment:
     DATABASE_URL: postgres://postgres:secret@postgres:5432/myapp
   depends_on:

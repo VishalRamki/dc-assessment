@@ -20,7 +20,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
         user = request.user
 
         if not request.user.is_authenticated:
-            return redirect(reverse("accounts:login"))
+            return redirect(reverse("login"))
 
         # redirect customers away
         if not (
