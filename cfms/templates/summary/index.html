@@ -2,7 +2,31 @@
 
 {% block content %}
 <div class="container mt-4">
-sberwobmreo
+    <div class="d-flex mb-4">
+        <h2>Overview</h2>
+    </div>
+    <div class="d-flex flex-wrap gap-3  mb-4">
+        {% include "components/card_widget.html" with count=total_count text="Total Complaints" %}
+        {% include "components/card_widget.html" with count=open_count text="Open Complaints" %}
+        {% include "components/card_widget.html" with count=resolved_count text="Resolved Complaints" %}
+    </div>
+    <div class="d-flex  mb-4">
+        <h2>Complaints By Status</h2>
+    </div>
 
+    <div class="d-flex flex-wrap gap-3  mb-4">
+        {% for item in status_counts %}
+            {% include "components/card_widget.html" with count=item.count text=item.complaint_status_ref__name %}
+        {% endfor %}
+    </div>
+    <div class="d-flex  mb-4">
+        <h2>Complaints By Categories</h2>
+    </div>
+
+    <div class="d-flex flex-wrap gap-3  mb-4">
+        {% for item in category_counts %}
+            {% include "components/card_widget.html" with count=item.count text=item.complaint_category_ref__name %}
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
