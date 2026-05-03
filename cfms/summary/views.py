@@ -1,9 +1,11 @@
+from datetime import timedelta
+
 from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.shortcuts import redirect
-from django.db.models import Count
+from django.db.models import F, Avg, Count, DurationField, ExpressionWrapper
 
 from dashboard.models import Complaint, ComplaintStatus
 from django.contrib.auth.views import LoginView
@@ -65,6 +67,42 @@ class IndexView(LoginRequiredMixin, generic.ListView):
               .order_by("-count")
         )
 
+        resolved_qs = qs.filter(complaint_status_ref__name="Resolved")
+
+        context["avg_resolution_time"] = resolved_qs.aggregate(
+            avg_time=Avg(
+                ExpressionWrapper(
+                    F("last_update_date") - F("sub_date"),
+                    output_field=DurationField()
+                )
+            )
+        )["avg_time"]
+
+        avg_time = context["avg_resolution_time"]
+
+        if avg_time:
+            total_seconds = int(avg_time.total_seconds())
+            hours = total_seconds // 3600
+            minutes = (total_seconds % 3600) // 60
+
+            context["avg_resolution_display"] = f"{hours}h {minutes}m"
+        else:
+            context["avg_resolution_display"] = "N/A"
+
+
+        SLA_DAYS = 5
+
+        threshold_date = timezone.now() - timedelta(days=SLA_DAYS)
+
+        context["sla_breaches"] = qs.filter(
+            sub_date__lt=threshold_date
+        ).exclude(
+            complaint_status_ref__name="Resolved"
+        )
+
+        context["sla_breach_count"] = context["sla_breaches"].count()
+
+        
         return context
     
 class CustomLoginView(LoginView):

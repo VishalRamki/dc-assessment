@@ -9,6 +9,8 @@
         {% include "components/card_widget.html" with count=total_count text="Total Complaints" %}
         {% include "components/card_widget.html" with count=open_count text="Open Complaints" %}
         {% include "components/card_widget.html" with count=resolved_count text="Resolved Complaints" %}
+        {% include "components/card_widget.html" with count=avg_resolution_display text="Average Resolution Time" %}
+        {% include "components/card_widget.html" with count=sla_breach_count text="SLA Breaches (5+ days)" %}
     </div>
     <div class="d-flex  mb-4">
         <h2>Complaints By Status</h2>
@@ -27,6 +29,41 @@
         {% for item in category_counts %}
             {% include "components/card_widget.html" with count=item.count text=item.complaint_category_ref__name %}
         {% endfor %}
+    </div>
+    <div class="d-flex  mb-4">
+        <h2>SLA Breaches</h2>
+    </div>
+    <div class="d-flex mb-4">
+        <div class="flex-grow-1">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Description</th>
+                        <th>Submitted</th>
+                        <th>Status</th>
+                        <th>Days Open</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for complaint in sla_breaches %}
+                    <tr>
+                        <td>{{ complaint.id }}</td>
+                        <td>{{ complaint.description }}</td>
+                        <td>{{ complaint.sub_date|date:"Y-m-d" }}</td>
+                        <td>{{ complaint.complaint_status_ref }}</td>
+                        <td>
+                            {{ complaint.sub_date|timesince }} ago
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-muted text-center">No SLA breaches</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>        
     </div>
 </div>
 {% endblock %}
