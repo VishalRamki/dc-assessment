@@ -1,48 +1,53 @@
-<h1>Complaint #{{ complaint.id }}</h1>
+{% extends "base.html" %}
 
-<p><strong>Description:</strong> {{ complaint.description }}</p>
-<p><strong>Status:</strong> {{ complaint.complaint_status_ref }}</p>
+{% block content %}
+    <h1>Complaint #{{ complaint.id }}</h1>
 
-{% if can_update_status %}
-<p><strong>Update Status:</strong> 
-  {% for status in statuses %}
-    <form method="post"
-          action="{% url 'dashboard:update-status' complaint.id status.id %}"
-          style="display:inline;">
-      {% csrf_token %}
-      <button type="submit">
-        {{ status.name }}
-      </button>
+    <p><strong>Description:</strong> {{ complaint.description }}</p>
+    <p><strong>Status:</strong> {{ complaint.complaint_status_ref }}</p>
+
+    {% if can_update_status %}
+    <p><strong>Update Status:</strong> 
+    {% for status in statuses %}
+        <form method="post"
+            action="{% url 'dashboard:update-status' complaint.id status.id %}"
+            style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">
+            {{ status.name }}
+        </button>
+        </form>
+    {% endfor %}
+    </p>
+    {% endif %}
+
+    <p><strong>Category:</strong> {{ complaint.complaint_category_ref }}</p>
+
+    <p><strong>Submitted:</strong> {{ complaint.sub_date }}</p>
+    <p><strong>Last Updated:</strong> {{ complaint.last_update_date }}</p>
+
+    <p><strong>Customer:</strong> {{ complaint.customer_account_ref }}</p>
+    <p><strong>Assigned Agent:</strong> {{ complaint.assigned_agent_ref }}</p>
+
+    <h3>Notes</h3>
+    <ul>
+    {% for note in complaint.notes.all %}
+        <li>{{ note }}</li>
+    {% empty %}
+        <li>No notes available</li>
+    {% endfor %}
+    </ul>
+
+    {% if note_form %}
+    <h3>Add Note</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ note_form.as_p }}
+        <button type="submit">Add</button>
+        <button type="submit" name="action" value="escalate">
+            Escalate
+        </button>
     </form>
-  {% endfor %}
-</p>
-{% endif %}
+    {% endif %}
+{% endblock %}
 
-<p><strong>Category:</strong> {{ complaint.complaint_category_ref }}</p>
-
-<p><strong>Submitted:</strong> {{ complaint.sub_date }}</p>
-<p><strong>Last Updated:</strong> {{ complaint.last_update_date }}</p>
-
-<p><strong>Customer:</strong> {{ complaint.customer_account_ref }}</p>
-<p><strong>Assigned Agent:</strong> {{ complaint.assigned_agent_ref }}</p>
-
-<h3>Notes</h3>
-<ul>
-  {% for note in complaint.notes.all %}
-    <li>{{ note }}</li>
-  {% empty %}
-    <li>No notes available</li>
-  {% endfor %}
-</ul>
-
-{% if note_form %}
-  <h3>Add Note</h3>
-  <form method="post">
-    {% csrf_token %}
-    {{ note_form.as_p }}
-    <button type="submit">Add</button>
-    <button type="submit" name="action" value="escalate">
-        Escalate
-    </button>
-  </form>
-{% endif %}

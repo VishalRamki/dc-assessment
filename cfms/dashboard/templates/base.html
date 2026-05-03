@@ -1,0 +1,19 @@
+{% load static %}
+
+<html>
+    <head>
+        <title>Complaint & Fault Management System</title>
+        <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" />
+    </head>
+<body>
+    <nav>Navigation Bar</nav>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>Site Footer</footer>
+
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>
+</body>
+</html>
