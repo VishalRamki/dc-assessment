@@ -12,15 +12,25 @@ from .forms import NoteForm
 from .models import Complaint, ComplaintStatus
 
 
-class IndexView(generic.ListView):
+class IndexView(LoginRequiredMixin, generic.ListView):
     template_name = "complaint/index.html"
     context_object_name = "latest_complaints_list"
 
     def get_queryset(self):
-        return Complaint.objects.order_by("-sub_date")
+        user = self.request.user
+
+        qs = Complaint.objects.order_by("-sub_date")
+
+        if user.is_staff or user.is_superuser:
+            return qs
+
+        if user.groups.filter(name="Agent").exists():
+            return qs.filter(assigned_agent_ref=user)
+
+        return qs.filter(customer_account_ref=user)
 
 
-class DetailView(generic.DetailView):
+class DetailView(LoginRequiredMixin, generic.DetailView):
     model = Complaint
     template_name = "complaint/detail.html"
 
