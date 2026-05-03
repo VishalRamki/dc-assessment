@@ -1,25 +1,16 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <h2>Login</h2>
 
 <form method="post">
   {% csrf_token %}
-
-  <p>
-    <label>Username:</label><br>
-    {{ form.username }}
-  </p>
-
-  <p>
-    <label>Password:</label><br>
-    {{ form.password }}
-  </p>
-
+    {{ form|crispy }}
   {% if form.errors %}
     <p style="color:red;">Invalid username or password</p>
   {% endif %}
 
-  <button type="submit">Login</button>
+  <button type="submit" class="btn btn-primary">Login</button>
 </form>
 {% endblock %}

@@ -1,13 +1,55 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="container mt-4">
+
     {% if latest_complaints_list %}
-        <ul>
-        {% for complaint in latest_complaints_list %}
-            <li><a href="/dashboard/complaint/{{ complaint.id }}/">{{ complaint.description }}</a></li>
-        {% endfor %}
-        </ul>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Description</th>
+                        <th>Submitted</th>
+                        <th>Last Updated</th>
+                        <th>Assigned Agent</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for complaint in latest_complaints_list %}
+                        <tr>
+
+                            <td>
+                                <a href="/dashboard/complaint/{{ complaint.id }}/" class="text-decoration-none">
+                                    {{ complaint.description }}
+                                </a>
+                            </td>
+
+                            <td>{{ complaint.sub_date|date:"Y-m-d H:i" }}</td>
+                            <td>{{ complaint.last_update_date|date:"Y-m-d H:i" }}</td>
+                            <td>
+                                {% if complaint.assigned_agent_ref %}
+                                    {{ complaint.assigned_agent_ref }}
+                                {% else %}
+                                    <span class="text-muted">Unassigned</span>
+                                {% endif %}
+                            </td>
+
+                            <td>{{ complaint.complaint_category_ref }}</td>
+
+                            <td>{{ complaint.complaint_status_ref }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% else %}
-        <p>You have not provided any complaints yet.</p>
+        <div class="alert alert-info mt-3">
+            You have not provided any complaints yet.
+        </div>
     {% endif %}
+
+</div>
 {% endblock %}
