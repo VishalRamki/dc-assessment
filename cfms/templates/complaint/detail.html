@@ -68,7 +68,7 @@
     </div>
     {% endif %}
 
-    <!-- Notes -->
+    {% if note_form %}
     <div class="card mb-4">
         <div class="card-header bg-light">
             <strong>Notes</strong>
@@ -87,7 +87,7 @@
                 {% endfor %}
             </ul>
 
-            {% if note_form %}
+            
                 <form method="post">
                     {% csrf_token %}
                     <div class="mb-3">
@@ -105,9 +105,9 @@
                         Escalate
                     </button>
                 </form>
-            {% endif %}
+            
         </div>
     </div>
-
+    {% endif %}
 </div>
 {% endblock %}
