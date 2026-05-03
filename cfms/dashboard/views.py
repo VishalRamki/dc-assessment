@@ -10,6 +10,8 @@ from django.shortcuts import redirect
 from .forms import NoteForm
 
 from .models import Complaint, ComplaintStatus
+from django.contrib.auth.views import LoginView
+from django.shortcuts import redirect
 
 
 class IndexView(LoginRequiredMixin, generic.ListView):
@@ -124,3 +126,10 @@ class UpdateComplaintStatusView(LoginRequiredMixin, generic.DetailView):
         complaint.save()
 
         return redirect("dashboard:detail", pk=pk)
+    
+class CustomLoginView(LoginView):
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(reverse('dashboard:index'))
+        return super().dispatch(request, *args, **kwargs)
