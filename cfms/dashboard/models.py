@@ -36,6 +36,8 @@ class Complaint(models.Model):
     assigned_agent_ref = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name='assigned_complaints'
     )
 
