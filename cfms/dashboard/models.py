@@ -63,9 +63,19 @@ class ServicePlan(models.Model):
     def __str__(self):
         return self.name
 
+class Area(models.Model):
+    name = models.CharField(max_length=96)
+
+    def __str__(self):
+        return self.name
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    data = models.FloatField(default=0)
+    call = models.FloatField(default=0)
+    sms = models.IntegerField(default=0)
     service_plan_ref = models.ForeignKey(ServicePlan, on_delete=models.CASCADE, null=True, blank=True)
+    area_ref = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.user.get_full_name()

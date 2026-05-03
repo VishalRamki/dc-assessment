@@ -4,7 +4,7 @@ from django.utils import timezone
 from faker import Faker
 import random
 
-from dashboard.models import Complaint, ComplaintCategory, ComplaintStatus, Notes
+from dashboard.models import Area, Complaint, ComplaintCategory, ComplaintStatus, Notes, ServicePlan, UserProfile
 
 fake = Faker()
 
@@ -40,6 +40,16 @@ class Command(BaseCommand):
 
         for name in categories:
             ComplaintCategory.objects.get_or_create(name=name)
+
+        areas = []
+        for i in range(10):
+            a,_ = Area.objects.get_or_create(name=fake.word())
+            areas.append(a)
+
+        ServicePlan.objects.get_or_create(name="Basic", data=5, call=100, sms=50)
+        ServicePlan.objects.get_or_create(name="Standard", data=10, call=300, sms=150)
+        ServicePlan.objects.get_or_create(name="Premium", data=50, call=1000, sms=500)
+
         # -------------------
         # GROUPS
         # -------------------
@@ -63,6 +73,23 @@ class Command(BaseCommand):
             user.set_password("Password.1")
             user.save()
             user.groups.add(group)
+
+            # Create UserProfile safely (prevents duplicates)
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+
+            # Assign random service plan if available
+            plans = list(ServicePlan.objects.all())
+            selected = random.choice(plans)
+            if plans:
+                profile.service_plan_ref = selected
+
+            profile.sms = random.randint(1, selected.sms)
+            profile.data = random.uniform(1.0, selected.data)
+            profile.call = random.uniform(1.0, selected.call)
+            profile.area_ref = random.choice(areas)
+
+            profile.save()
+
             return user
 
         customers = [
