@@ -67,7 +67,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
               .order_by("-count")
         )
 
-        resolved_qs = qs.filter(complaint_status_ref__name="Resolved")
+        resolved_qs = qs.filter(complaint_status_ref__name="Closed")
 
         context["avg_resolution_time"] = resolved_qs.aggregate(
             avg_time=Avg(
@@ -97,12 +97,12 @@ class IndexView(LoginRequiredMixin, generic.ListView):
         context["sla_breaches"] = qs.filter(
             sub_date__lt=threshold_date
         ).exclude(
-            complaint_status_ref__name="Resolved"
+            complaint_status_ref__name="Closed"
         )
 
         context["sla_breach_count"] = context["sla_breaches"].count()
 
-        
+
         return context
     
 class CustomLoginView(LoginView):
