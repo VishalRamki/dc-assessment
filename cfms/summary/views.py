@@ -67,7 +67,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
               .order_by("-count")
         )
 
-        resolved_qs = qs.filter(complaint_status_ref__name="Closed")
+        resolved_qs = qs.filter(complaint_status_ref__name="Resolved")
 
         context["avg_resolution_time"] = resolved_qs.aggregate(
             avg_time=Avg(
