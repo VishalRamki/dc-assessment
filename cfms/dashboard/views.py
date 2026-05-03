@@ -13,7 +13,6 @@ from .models import Complaint, ComplaintStatus
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect
 
-
 class IndexView(LoginRequiredMixin, generic.ListView):
     template_name = "complaint/index.html"
     context_object_name = "latest_complaints_list"
