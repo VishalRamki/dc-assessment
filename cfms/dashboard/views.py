@@ -125,10 +125,3 @@ class UpdateComplaintStatusView(LoginRequiredMixin, generic.DetailView):
         complaint.save()
 
         return redirect("dashboard:detail", pk=pk)
-    
-class CustomLoginView(LoginView):
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect(reverse('dashboard:index'))
-        return super().dispatch(request, *args, **kwargs)

@@ -18,12 +18,13 @@ from django.contrib import admin
 from django.urls import include, path
 from django.contrib.auth import views as auth_views
 
-from dashboard.views import CustomLoginView
-
-
 urlpatterns = [
-    path('', CustomLoginView.as_view(), name='login'),
+    # path('', CustomLoginView.as_view(), name='login'),
     path('admin/', admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
-    path('dashboard/', include('dashboard.urls')),
+    # slight problem ; I mistakeningly set the app to be dashboard and it would take too long to refadctor
+    # so pretend this is just complaint
+    path('', include('dashboard.urls')),
+    # summary is the actual dashboard
+    path('', include('summary.urls')),
 ]

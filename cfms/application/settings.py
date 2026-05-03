@@ -135,7 +135,7 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-LOGIN_REDIRECT_URL = '/dashboard/'   # where users go after login
+LOGIN_REDIRECT_URL = '/'   # where users go after login
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = ["bootstrap5"] 
