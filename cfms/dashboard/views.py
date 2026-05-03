@@ -33,12 +33,14 @@ class IndexView(LoginRequiredMixin, generic.ListView):
 class DetailView(LoginRequiredMixin, generic.DetailView):
     model = Complaint
     template_name = "complaint/detail.html"
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        context["statuses"] = ComplaintStatus.objects.exclude(name="Escalated")
         user = self.request.user
-
+        context["can_update_status"] = (
+                user.is_staff or user.groups.filter(name="Agent").exists() or user.groups.filter(name="Admin").exists()
+            )
         # only allow certain group (e.g. "Agent")
         if user.groups.filter(name="Agent").exists() or user.groups.filter(name="Admin"):
             context["note_form"] = NoteForm()
@@ -58,11 +60,21 @@ class DetailView(LoginRequiredMixin, generic.DetailView):
 
         if form.is_valid():
             note = form.save(commit=False)
-            note.created_by = user
+            note.created_by = request.user
             note.save()
 
-            # attach note to complaint
             self.object.notes.add(note)
+
+            action = request.POST.get("action")
+
+            # normal note
+            if action == "note":
+                pass
+            # escalate action
+            elif action == "escalate":
+                self.object.complaint_status_ref = ComplaintStatus.objects.get(name="Escalated")
+                self.object.last_update_date = timezone.now()
+                self.object.save()
 
         return redirect("dashboard:detail", pk=self.object.pk)
 
@@ -90,3 +102,25 @@ class CreateView(LoginRequiredMixin, generic.CreateView):
 
 class ResultsView(generic.DetailView):
     model = Complaint
+
+class UpdateComplaintStatusView(LoginRequiredMixin, generic.DetailView):
+
+    def post(self, request, pk, status_id):
+        complaint = get_object_or_404(Complaint, pk=pk)
+
+        # HARD SECURITY CHECK
+        if not (request.user.is_staff or request.user.groups.filter(name="Agent").exists()  or request.user.groups.filter(name="Admin").exists()):
+            from django.core.exceptions import PermissionDenied
+            raise PermissionDenied
+
+        # Optional: ensure agent is assigned to this complaint
+        if request.user.groups.filter(name="Admin").exists():
+            pass
+        elif request.user.groups.filter(name="Agent").exists():
+            if complaint.assigned_agent_ref != request.user:
+                raise PermissionDenied
+
+        complaint.complaint_status_ref_id = status_id
+        complaint.save()
+
+        return redirect("dashboard:detail", pk=pk)

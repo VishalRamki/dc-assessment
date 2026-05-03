@@ -2,6 +2,22 @@
 
 <p><strong>Description:</strong> {{ complaint.description }}</p>
 <p><strong>Status:</strong> {{ complaint.complaint_status_ref }}</p>
+
+{% if can_update_status %}
+<p><strong>Update Status:</strong> 
+  {% for status in statuses %}
+    <form method="post"
+          action="{% url 'dashboard:update-status' complaint.id status.id %}"
+          style="display:inline;">
+      {% csrf_token %}
+      <button type="submit">
+        {{ status.name }}
+      </button>
+    </form>
+  {% endfor %}
+</p>
+{% endif %}
+
 <p><strong>Category:</strong> {{ complaint.complaint_category_ref }}</p>
 
 <p><strong>Submitted:</strong> {{ complaint.sub_date }}</p>
@@ -25,5 +41,8 @@
     {% csrf_token %}
     {{ note_form.as_p }}
     <button type="submit">Add</button>
+    <button type="submit" name="action" value="escalate">
+        Escalate
+    </button>
   </form>
 {% endif %}
