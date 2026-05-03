@@ -5,6 +5,9 @@ from django.urls import reverse, reverse_lazy
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
+from django.shortcuts import redirect
+
+from .forms import NoteForm
 
 from .models import Complaint, ComplaintStatus
 
@@ -20,6 +23,39 @@ class IndexView(generic.ListView):
 class DetailView(generic.DetailView):
     model = Complaint
     template_name = "complaint/detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user = self.request.user
+
+        # only allow certain group (e.g. "Agent")
+        if user.groups.filter(name="Agent").exists() or user.groups.filter(name="Admin"):
+            context["note_form"] = NoteForm()
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        user = request.user
+
+        # block if not in group
+        if not user.groups.filter(name="Agent").exists() and not user.groups.filter(name="Admin").exists():
+            return redirect("dashboard:detail", pk=self.object.pk)
+
+        form = NoteForm(request.POST)
+
+        if form.is_valid():
+            note = form.save(commit=False)
+            note.created_by = user
+            note.save()
+
+            # attach note to complaint
+            self.object.notes.add(note)
+
+        return redirect("dashboard:detail", pk=self.object.pk)
+
 
 class CreateView(LoginRequiredMixin, generic.CreateView):
     model = Complaint

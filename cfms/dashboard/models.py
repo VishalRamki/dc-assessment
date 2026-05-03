@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 # Create your models here.
 
 class ComplaintStatus(models.Model):
@@ -17,6 +17,14 @@ class ComplaintCategory(models.Model):
 
 class Notes(models.Model):
     description = models.CharField(max_length=1024)
+    last_update_date = models.DateTimeField("last updated timestamp", default=timezone.now())
+    # @TODO I don't want to do this, but I just want it working. I will update this after
+    user_ref = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
     def __str__(self):
         return self.description
 
