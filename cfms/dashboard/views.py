@@ -22,7 +22,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
 
         qs = Complaint.objects.order_by("-sub_date")
 
-        if user.is_staff or user.is_superuser:
+        if user.is_staff or user.is_superuser or user.groups.filter(name="Admin").exists():
             return qs
 
         if user.groups.filter(name="Agent").exists():
