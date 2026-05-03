@@ -36,14 +36,38 @@
                 {{ complaint.customer_account_ref }}
             </p>
 
-            <p><strong>Assigned Agent:</strong>
-                {% if complaint.assigned_agent_ref %}
-                    {{ complaint.assigned_agent_ref }}
-                {% else %}
-                    <span class="text-muted">Unassigned</span>
-                {% endif %}
-            </p>
+            <p><strong>Assigned Agent:</strong></p>
+            {% if can_assign_agent %}
+                <form method="post" class="d-flex gap-2 align-items-center">
+                    {% csrf_token %}
+                    
+                    <select name="assigned_agent" class="form-select w-auto">
+                        <option value="">Unassigned</option>
 
+                        {% for agent in agents %}
+                            <option value="{{ agent.id }}"
+                                {% if complaint.assigned_agent_ref == agent %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ agent.username }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" name="action" value="assign_agent" class="btn btn-primary btn-sm">
+                        Update
+                    </button>
+                </form>
+            {% else %}
+                <p>
+                    {% if complaint.assigned_agent_ref %}
+                        {{ complaint.assigned_agent_ref }}
+                    {% else %}
+                        <span class="text-muted">Unassigned</span>
+                    {% endif %}
+                </p>
+            {% endif %}
         </div>
     </div>
 

@@ -6,6 +6,7 @@ from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.shortcuts import redirect
+from django.contrib.auth.models import User
 
 from .forms import NoteForm
 
@@ -46,6 +47,10 @@ class DetailView(LoginRequiredMixin, generic.DetailView):
         if user.groups.filter(name="Agent").exists() or user.groups.filter(name="Admin"):
             context["note_form"] = NoteForm()
 
+        context["can_assign_agent"] = user.groups.filter(name="Admin").exists() or user.is_superuser
+
+        context["agents"] = User.objects.filter(groups__name="Agent")
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -75,6 +80,17 @@ class DetailView(LoginRequiredMixin, generic.DetailView):
             elif action == "escalate":
                 self.object.complaint_status_ref = ComplaintStatus.objects.get(name="Escalated")
                 self.object.last_update_date = timezone.now()
+                self.object.save()
+
+        if request.POST.get("action") == "assign_agent":
+            agent_id = request.POST.get("assigned_agent")
+
+            if request.user.groups.filter(name="Admin").exists() or request.user.is_superuser:
+                if agent_id:
+                    self.object.assigned_agent_ref = User.objects.get(id=agent_id)
+                else:
+                    self.object.assigned_agent_ref = None
+
                 self.object.save()
 
         return redirect("dashboard:detail", pk=self.object.pk)
