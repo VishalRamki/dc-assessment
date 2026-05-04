@@ -27,7 +27,17 @@
                             <li><a class="dropdown-item" href="/complaint/">All Complaints</a></li>
                         </ul>
                     </li>
+                    
+                    {% if "Customer" in user.groups.all|stringformat:"s" %}
+                    <li class="nav-item">
+                        <a class="nav-link " href="/chat">
+                            Chatbot
+                        </a>
+                    </li>
                     {% endif %}
+
+                    {% endif %}
+
                 </ul>
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     {% if user.is_authenticated %}
