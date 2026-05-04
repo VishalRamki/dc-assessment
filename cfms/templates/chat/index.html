@@ -1,15 +1,65 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% block content %}
-    <h1>Ask a Question</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
+<div class="container py-5">
 
-    {% if response %}
-        <h2>Response:</h2>
-        <p>{{ response }}</p>
-    {% endif %}
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+
+            <!-- Chat Card -->
+            <div class="card shadow-sm border-0">
+
+                <!-- Header -->
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Ask a Question</h5>
+                </div>
+
+                <!-- Chat Body -->
+                <div class="card-body" style="height: 400px; overflow-y: auto; background: #f8f9fa;">
+                    {% for msg in messages %}
+                        <div class="d-flex mb-2 {% if msg.is_user %}justify-content-end{% endif %}">
+                            <div class="p-2 rounded bg-primary text-white">
+                                {{ msg.response|linebreaks }}
+                                <span class="text-muted">{{ msg.created_at|date:"M d, H:i" }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% if response %}
+                        <!-- Bot message -->
+                        <div class="d-flex mb-3">
+                            <div class="bg-white border rounded p-3 shadow-sm" style="max-width: 80%;">
+                                {{ response|linebreaks }}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-muted text-center mt-5">
+                            Ask something to start the conversation…
+                        </div>
+                    {% endif %}
+
+                </div>
+
+                <!-- Input Area -->
+                <div class="card-footer bg-white">
+
+                    <form method="post" class="d-flex gap-2 align-items-start">
+                        {% csrf_token %}
+
+                        <div class="flex-grow-1">
+                            {{ form|crispy }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            Send
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
 {% endblock %}

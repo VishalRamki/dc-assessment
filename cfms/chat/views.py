@@ -1,10 +1,11 @@
 import json
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 
 from chat.pipeline import chat_pipeline
 
 from .forms import MessageForm
+from .models import Message
 
 schema = {
     "Complaint": {
@@ -75,21 +76,25 @@ schema_json = json.dumps(schema, indent=2)
 
 @login_required
 def ask_question_view(request):
-    form = MessageForm(request.POST or None)
-    response = None
+    if request.method == "POST":
+        form = MessageForm(request.POST)
 
-    if form.is_valid():
-        question = form.save(commit=False)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.user_ref = request.user
 
-        print(question.prompt)
-        response = chat_pipeline(request.user, question.prompt)
-        print(response)
+            response = chat_pipeline(request.user, question.prompt)
 
-        question.response = response
-        question.user_ref = request.user
-        question.save()
+            question.response = response
+            question.save()
+            return redirect("ask_question")  # IMPORTANT
 
-    return render(request, 'chat/index.html', {
-        'form': form,
-        'response': response
+    else:
+        form = MessageForm()
+
+    messages = Message.objects.filter(user_ref=request.user).order_by("id")
+    
+    return render(request, "chat/index.html", {
+        "form": form,
+        "messages": messages,
     })

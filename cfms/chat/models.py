@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from django.db import models
 
 from dashboard.models import settings
@@ -10,5 +12,7 @@ class Message(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
+    created_at = models.DateTimeField(default=timezone.now)
+
     def __str__(self):
         return self.prompt
