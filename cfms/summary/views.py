@@ -27,7 +27,6 @@ class IndexView(LoginRequiredMixin, generic.ListView):
             user.is_staff
             or user.is_superuser
             or user.groups.filter(name="Admin").exists()
-            or user.groups.filter(name="Agent").exists()
         ):
             return redirect(reverse('dashboard:index'))
 
