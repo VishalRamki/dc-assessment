@@ -16,6 +16,14 @@ Docker is required to build and run this application. Please see platform specif
 
 # Environment Setup
 
+To prepare the Environment variables, when you clone the repo, `cd` into the `cfms` folder and run the following:
+
+```bash
+cp .env.example .env
+```
+
+Then update the `.env` with the changes you'll need. See the section below for descriptions and defaults regarding the `.env` file.
+
 ## Environment Variables
 
 | Variable               | Description                                                                                                                                   |
@@ -35,8 +43,6 @@ Docker is required to build and run this application. Please see platform specif
 
 
 # How to Run
-
-step-by-step instructions to get the application running from a fresh clone
 
 For running for Production & Development, ensure that you clone the application using:
 
@@ -89,7 +95,7 @@ The application will be seeded with data after the application's migration scrip
 
 # Chatbot Setup
 
-In order for the Chatbot to work correctly, you are required to have a `Groq` Api Key and then specify which Groq model you want to use.
+In order for the Chatbot to work correctly, you are required to have a `Groq` Api Key and then specify which `Groq` model you want to use. See the `Environment Variables` section for more information.
 
 # Assumptions & Design Decisions
 
