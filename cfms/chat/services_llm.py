@@ -29,6 +29,34 @@ def safe_json(data):
         default=lambda o: o.isoformat() if isinstance(o, datetime) else str(o)
     )
 
+def extract_filters(query: str):
+    prompt = """
+Extract structured filters from user query.
+
+Return ONLY JSON.
+
+Example:
+Input: "open complaints in billing category"
+Output:
+{
+  "status": "open",
+  "category": "billing"
+}
+
+If none: {}
+"""
+
+    res = llm.invoke([
+        SystemMessage(content=prompt),
+        HumanMessage(content=query)
+    ])
+
+    try:
+        data = json.loads(res.content)
+        return data if isinstance(data, dict) else {}
+    except:
+        return {}
+
 def classify_intents_llm(query: str):
     system_prompt = f"""
 You are an intent classification system.

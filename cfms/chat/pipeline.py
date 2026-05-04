@@ -1,4 +1,4 @@
-from .services_llm import format_with_groq
+from .services_llm import extract_filters, format_with_groq
 from .services import handle_query
 
 def chat_pipeline(user, query: str):

@@ -1,4 +1,4 @@
-from .services_llm import classify_intents_llm
+from .services_llm import classify_intents_llm, extract_filters
 
 from . import helpers
 
@@ -24,6 +24,8 @@ def classify_intent(query: str):
 
 def handle_query(user, query: str):
     intents = classify_intents_llm(query)
+    filters = extract_filters(query)
+
 
     results = {}
 
@@ -35,7 +37,7 @@ def handle_query(user, query: str):
             results["usage"] = helpers.get_data_usage(user)
 
         elif intent == "complaints":
-            results["complaints"] = helpers.get_open_complaints(user)
+            results["complaints"] = helpers.get_open_complaints(user, filters=filters)
 
         elif intent == "payment":
             results["payment"] = helpers.get_last_payment(user)

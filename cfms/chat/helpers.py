@@ -38,14 +38,23 @@ def get_data_usage(user):
     }
 
 
-def get_open_complaints(user):
+def get_open_complaints(user, filters=None):
     complaints = Complaint.objects.select_related(
         "complaint_status_ref",
         "complaint_category_ref"
     ).filter(
-        customer_account_ref=user,
-        complaint_status_ref__name__iexact="open"
+        customer_account_ref=user
     )
+
+    if filters:
+        if "status" in filters:
+            complaints = complaints.filter(complaint_status_ref__name=filters["status"])
+
+        if "category" in filters:
+            complaints = complaints.filter(complaint_category_ref__name=filters["category"])
+
+        if "area" in filters:
+            complaints = complaints.filter(complaint_area_ref__name=filters["area"])
 
     return [
         {
