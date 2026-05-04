@@ -154,7 +154,8 @@ class Command(BaseCommand):
                 customer_account_ref=customer,
                 assigned_agent_ref=agent,
                 complaint_category_ref=category,
-                complaint_status_ref=status
+                complaint_status_ref=status,
+                area_ref=random.choice(areas)
             )
 
             num_notes = random.choices([0,1,2,3,4,5], weights=[10,20,25,20,15,10])[0]

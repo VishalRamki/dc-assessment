@@ -14,6 +14,7 @@
                         <th>Assigned Agent</th>
                         <th>Category</th>
                         <th>Status</th>
+                        <th>Area</th>
                     </tr>
                 </thead>
 
@@ -40,6 +41,7 @@
                             <td>{{ complaint.complaint_category_ref }}</td>
 
                             <td>{{ complaint.complaint_status_ref }}</td>
+                            <td>{{ complaint.area_ref }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
