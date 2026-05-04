@@ -27,4 +27,5 @@ urlpatterns = [
     path('', include('dashboard.urls')),
     # summary is the actual dashboard
     path('', include('summary.urls')),
+    path('chat/', include('chat.urls')),
 ]
