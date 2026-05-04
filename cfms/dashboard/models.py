@@ -14,6 +14,12 @@ class ComplaintCategory(models.Model):
     name = models.CharField(max_length=128)
     def __str__(self):
         return self.name
+    
+class Area(models.Model):
+    name = models.CharField(max_length=96)
+
+    def __str__(self):
+        return self.name
 
 class Notes(models.Model):
     description = models.CharField(max_length=1024)
@@ -49,6 +55,13 @@ class Complaint(models.Model):
         related_name='assigned_complaints'
     )
 
+    area_ref = models.ForeignKey(
+        Area,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+
     complaint_category_ref = models.ForeignKey(ComplaintCategory, on_delete=models.CASCADE)
     complaint_status_ref = models.ForeignKey(ComplaintStatus, on_delete=models.CASCADE)
 
@@ -59,12 +72,6 @@ class ServicePlan(models.Model):
     data = models.FloatField()
     call = models.FloatField()
     sms = models.IntegerField()
-
-    def __str__(self):
-        return self.name
-
-class Area(models.Model):
-    name = models.CharField(max_length=96)
 
     def __str__(self):
         return self.name
